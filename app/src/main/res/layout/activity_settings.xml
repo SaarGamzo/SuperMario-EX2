@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/mario_background"
+    android:paddingLeft="@dimen/settings_padding_default"
+    android:paddingTop="@dimen/settings_padding_default"
+    android:paddingRight="@dimen/settings_padding_default"
+    android:paddingBottom="@dimen/settings_padding_default"
+    tools:context=".UI.SettingsActivity">
+
+    <!-- Image at the top -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/super_mario_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/super_mario_label" />
+
+    <!-- On/Off switch for vibrate -->
+    <Switch
+        android:id="@+id/settings_BTN_vibrate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/super_mario_pic"
+        android:layout_centerHorizontal="true"
+        android:text="Vibrate"
+        android:textSize="@dimen/settings_text_size"
+        android:textStyle="bold"
+        android:padding="10dp"
+        android:textColor="#000000" />
+
+    <!-- Label for Rows slider -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/settings_numOfRow_TXT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settings_BTN_vibrate"
+        android:layout_centerHorizontal="true"
+        android:text="Number of Rows: 4"
+        android:textStyle="bold"
+        android:textSize="@dimen/settings_text_size"
+        android:textColor="#000000" />
+
+    <!-- Slider to choose number of rows -->
+    <SeekBar
+        android:id="@+id/settings_SLIDER_rows"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settings_numOfRow_TXT"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:max="8"
+        android:min="4"
+        android:progress="4" />
+
+    <!-- Label for Columns slider -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/settings_numOfCol_TXT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settings_SLIDER_rows"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Number of Columns: 3"
+        android:textStyle="bold"
+        android:textSize="@dimen/settings_text_size"
+        android:textColor="#000000" />
+
+    <!-- Slider to choose number of columns -->
+    <SeekBar
+        android:id="@+id/settings_SLIDER_columns"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settings_numOfCol_TXT"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:max="5"
+        android:min="3"
+        android:progress="3" />
+
+    <!-- Label for GameSpeed slider -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/settings_GameSpeed_TXT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settings_SLIDER_columns"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Game speed (low to high): 1"
+        android:textStyle="bold"
+        android:textSize="@dimen/settings_text_size"
+        android:textColor="#000000" />
+
+    <!-- Slider to choose game speed -->
+    <SeekBar
+        android:id="@+id/settings_SLIDER_gameSpeed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settings_GameSpeed_TXT"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:max="5"
+        android:min="1"
+        android:progress="3" />
+
+    <!-- Back button to go to the main menu -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/settings_BTN_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/settings_SLIDER_gameSpeed"
+        android:layout_marginTop="60dp"
+        android:text="Back"
+        android:textSize="@dimen/settings_text_size" />
+
+</RelativeLayout>

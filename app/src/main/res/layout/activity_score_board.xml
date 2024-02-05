@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/mario_background"
+    android:padding="16dp">
+
+    <!-- Headline at the center top -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/scoreboard_LBL_headline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/scoreboard"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
+
+    <!-- Add your ScoreBoard content here (e.g., a RecyclerView for displaying scores) -->
+
+    <!-- Button to return to the main menu at the bottom -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/scoreboard_BTN_return"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Return to Main Menu"
+        android:textSize="18sp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"/>
+
+</RelativeLayout>

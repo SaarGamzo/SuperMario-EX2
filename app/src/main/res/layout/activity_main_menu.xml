@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="16dp"
+    android:background="@drawable/mario_background"
+    tools:context=".UI.MainMenuActivity">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/super_mario_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:src="@drawable/super_mario_label" />
+
+    <!-- 'Play' button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/main_BTN_play"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Play"
+        android:textSize="20sp"
+        android:layout_below="@id/super_mario_pic"
+        android:layout_marginTop="150dp"/>
+
+    <!-- 'Scoreboard' button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/main_BTN_scoreboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Scoreboard"
+        android:textSize="20sp"
+        android:layout_below="@id/main_BTN_play"
+        android:layout_marginTop="20dp" />
+
+    <!-- 'Settings' button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/main_BTN_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:textSize="20sp"
+        android:layout_below="@id/main_BTN_scoreboard"
+        android:layout_marginTop="20dp" />
+
+    <!-- 'Quit' button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/main_BTN_quit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Quit"
+        android:textSize="20sp"
+        android:layout_below="@id/main_BTN_settings"
+        android:layout_marginTop="20dp"/>
+
+</RelativeLayout>

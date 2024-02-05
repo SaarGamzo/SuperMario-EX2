@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Mario_Game_EX2</string>
+    <string name="rows_slider_label">Number of rows: 5</string>
+    <string name="cols_slider_label">Number of columns: 3</string>
+    <string name="ScoreBoard"><u>ScoreBoard</u></string>
+    <string name="scoreboard">ScoreBoard</string>
+</resources>
