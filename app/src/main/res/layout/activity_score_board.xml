@@ -18,6 +18,16 @@
         android:textColor="@color/black"/>
 
     <!-- Add your ScoreBoard content here (e.g., a RecyclerView for displaying scores) -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/scoreboard_LBL_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/scoreboard_LBL_headline"
+        android:text=""
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
 
     <!-- Button to return to the main menu at the bottom -->
     <com.google.android.material.button.MaterialButton

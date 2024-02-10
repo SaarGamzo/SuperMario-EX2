@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,10 +22,18 @@ import com.example.mario_game_ex2.Logic.GameTool;
 import com.example.mario_game_ex2.Logic.Opponent;
 import com.example.mario_game_ex2.Logic.Player;
 import com.example.mario_game_ex2.Logic.Reviver;
+import com.example.mario_game_ex2.Models.Score;
+import com.example.mario_game_ex2.Models.TopTenScores;
 import com.example.mario_game_ex2.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
+import com.example.mario_game_ex2.Models.Score;
+import com.example.mario_game_ex2.Models.TopTenScores;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainGameActivity extends Activity {
 
@@ -48,12 +57,16 @@ public class MainGameActivity extends Activity {
 
     private boolean isGamePaused = false;
 
+    private TopTenScores topTenScores;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_game);
         findViews();
+        topTenScores = new TopTenScores();
+        topTenScores.setName("Top 10 Players");
         isGamePaused = false;
         handler = new Handler();
         GAMESPEED = getIntent().getIntExtra("updatedGameSpeed", 1); // get value from settings screen
@@ -221,10 +234,20 @@ public class MainGameActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String playerName = edtPlayerName.getText().toString();
-                // TODO - Handle the player name and score as needed (e.g., save to a database)
                 if(playerName.equals("")){
                     makeToast("Enter player name!");
                 }else {
+                    // Inside showGameOverDialog method
+                    SharedPreferences prefs = getSharedPreferences("TopScores", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    int score = Integer.parseInt(finalScore);
+                    // add new Score to the topTenScores
+                    Score newScore = new Score();
+                    newScore.setName(playerName);
+                    newScore.setDate(new Date());
+                    newScore.setScore(score);
+                    topTenScores.addScore(newScore);
+
                     navigateToMainMenu();
                     dialog.dismiss(); // Close the dialog
                 }

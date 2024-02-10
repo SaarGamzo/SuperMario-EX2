@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mario_game_ex2.R;
+import com.example.mario_game_ex2.Utils.SharedPreferencesManager;
 import com.google.android.material.button.MaterialButton;
 
 public class MainMenuActivity extends AppCompatActivity {
@@ -27,6 +28,7 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         findViews();
+        SharedPreferencesManager.init(this);
         GAMESPEED = getIntent().getIntExtra("updatedGameSpeed", 1); // get value from settings screen
         COLS = getIntent().getIntExtra("updatedCols", 5); // get value from settings screen
         ROWS = getIntent().getIntExtra("updatedRows", 8); // get value from settings screen
