@@ -10,6 +10,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +32,7 @@ import com.example.mario_game_ex2.Logic.Reviver;
 import com.example.mario_game_ex2.Models.Score;
 import com.example.mario_game_ex2.Models.TopTenScores;
 import com.example.mario_game_ex2.R;
+import com.example.mario_game_ex2.Utils.SoundPlayer;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
@@ -73,34 +75,48 @@ public class MainGameActivity extends Activity implements SensorEventListener {
     private Sensor mGyroscope;
     private boolean isGameOverDialogShowing = false;
 
+    private SoundPlayer soundPlayer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_game);
         findViews();
-//        topTenScores = new TopTenScores();
-//        topTenScores.setName("Top 10 Players");
-        isGamePaused = false;
+
+        // Initialize game components
         handler = new Handler();
-        GAMESPEED = getIntent().getIntExtra("updatedGameSpeed", 1); // get value from settings screen
-        COLS = getIntent().getIntExtra("updatedCols", 3); // get Columms value from main menu with default 3
-        ROWS = getIntent().getIntExtra("updatedRows", 5); // get Rows value from main menu with default 5
-        isVibrator = getIntent().getBooleanExtra("vibrateValue", true); // get if the game include vibrates or not
-        sensorMode = getIntent().getBooleanExtra("sensorMode", false); // get if the game running with buttons/tilts
-        gameMan = new GameManager(ROWS, COLS, 3); // create game manager
-        board = gameMan.getBoard(); // get board of GameTool's
-        setMatrixAtStart(); // align UI with content of board at start of a new game
+        isGamePaused = false;
+        addNewOpponentsScheduler = true;
+        isGameOverDialogShowing = false;
+        soundPlayer = SoundPlayer.getInstance(getApplicationContext());
+
+        // Get game settings from intent extras
+        GAMESPEED = getIntent().getIntExtra("updatedGameSpeed", 1);
+        COLS = getIntent().getIntExtra("updatedCols", 3);
+        ROWS = getIntent().getIntExtra("updatedRows", 5);
+        isVibrator = getIntent().getBooleanExtra("vibrateValue", true);
+        sensorMode = getIntent().getBooleanExtra("sensorMode", false);
+
+        // Initialize game manager
+        gameMan = new GameManager(ROWS, COLS, 3);
+        board = gameMan.getBoard();
+
+        // Set up UI based on game settings
+        setMatrixAtStart();
         setListeners();
-        if (sensorMode) { // remove buttons and use tilts
+        if (sensorMode) {
             main_game_LBL_fast.setText("");
             setMovementListeners();
             setMovementButtonsNotVisible();
         } else {
             main_game_LBL_fast.setVisibility(View.INVISIBLE);
         }
-        play(); // play game function
+
+        // Start the game loop
+        play();
     }
+
 
     private void setMovementListeners() {
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -209,6 +225,7 @@ public class MainGameActivity extends Activity implements SensorEventListener {
         if (isVibrator) {
             vibrate();
         }
+        soundPlayer.playSound();
     }
 
     private void makeToast(String toastText) {
@@ -257,7 +274,7 @@ public class MainGameActivity extends Activity implements SensorEventListener {
     }
 
     private void showGameOverDialog(String finalScore) {
-        isGamePaused = true;
+        pauseGame();
         isGameOverDialogShowing = true;
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.game_over_dialog);
@@ -281,19 +298,18 @@ public class MainGameActivity extends Activity implements SensorEventListener {
                     makeToast("Enter player name!");
                 } else {
                     // Inside showGameOverDialog method
-                    SharedPreferences prefs = getSharedPreferences("TopScores", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    int score = Integer.parseInt(finalScore);
+//                    SharedPreferences prefs = getSharedPreferences("TopScores", Context.MODE_PRIVATE);
+//                    SharedPreferences.Editor editor = prefs.edit();
+//                    int score = Integer.parseInt(finalScore);
                     // add new Score to the topTenScores
-                    Score newScore = new Score();
-                    newScore.setName(playerName);
-                    newScore.setDate(new Date());
-                    newScore.setScore(score);
-                    topTenScores.addScore(newScore);
-
+//                    Score newScore = new Score();
+//                    newScore.setName(playerName);
+//                    newScore.setDate(new Date());
+//                    newScore.setScore(score);
+//                    topTenScores.addScore(newScore);
+                    isGameOverDialogShowing = false;
                     navigateToMainMenu();
                     dialog.dismiss(); // Close the dialog
-                    isGameOverDialogShowing = false; // Reset the flag when the dialog is dismissed
                 }
             }
         });
@@ -365,29 +381,39 @@ public class MainGameActivity extends Activity implements SensorEventListener {
 
     @Override
     public void onBackPressed() {
-        if (isGameOverDialogShowing) {
-            return;
-        }
-        if (!isGamePaused) {
+        if (!isGamePaused && !isGameOverDialogShowing) {
             pauseGame(); // Pause the game and show the pause dialog
         } else {
-            super.onBackPressed(); // Allow normal back button behavior when game is already paused
+            super.onBackPressed(); // Allow normal back button behavior when game is already paused or game over dialog is showing
         }
     }
 
     // Call this method when you want to pause the game
     private void pauseGame() {
-        mSensorManager.unregisterListener(this);
+        if(this.sensorMode)
+            mSensorManager.unregisterListener(this);
         isGamePaused = true;
         showPauseDialog();
+        handler.removeCallbacksAndMessages(null);
     }
 
     // Call this method when you want to resume the game
     private void resumeGame() {
         isGamePaused = false;
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
-        // Perform tasks to resume the game (e.g., restart the timer)
+        if (sensorMode) {
+            registerSensorListeners(); // Register sensor listeners if in sensor mode
+        }
+        play(); // Restart the game loop
+    }
+
+    // Register sensor listeners
+    private void registerSensorListeners() {
+        if (mAccelerometer != null) {
+            mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        if (mGyroscope != null) {
+            mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     // Show a pause dialog with resume and quit buttons when back button clicked
@@ -430,6 +456,7 @@ public class MainGameActivity extends Activity implements SensorEventListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        soundPlayer.release();
     }
 
     @Override
@@ -440,18 +467,16 @@ public class MainGameActivity extends Activity implements SensorEventListener {
             if (x < -5) {
                 movePlayerRight();
             }
-            if (x > 5) {
+            else if (x > 5) {
                 movePlayerLeft();
             }
         } else {
             if (y < -5) {
                 increaseGameSpeed();
             }
-            if (y > 5) {
+            else if (y > 5) {
                 decreaseGameSpeed();
             }
-        }
-        if (x > (-2) && x < (2) && y > (-2) && y < (2)) {
         }
     }
 
