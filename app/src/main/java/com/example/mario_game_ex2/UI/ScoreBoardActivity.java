@@ -35,9 +35,9 @@ public class ScoreBoardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_score_board);
         findViews();
         setListeners();
-        scoreboard_LBL_content.setText(topScoresList.toString());
-        loadTopScores();
-        scoreboard_LBL_content.setText(topTenScores.toString());
+        scoreboard_LBL_content.setText("AWA");
+//        loadTopScores();
+//        scoreboard_LBL_content.setText(topTenScores.toString());
     }
 
     private void findViews () {

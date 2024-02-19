@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="16dp"
+    android:background="@drawable/mario_background"
+    tools:context=".UI.SecondMenuActivity">
+
+
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/super_mario_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:src="@drawable/super_mario_label" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/second_TXT_headline"
+        android:layout_width="270dp"
+        android:layout_height="55dp"
+        android:layout_below="@id/super_mario_pic"
+        android:text="Choose Mode:"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        android:textSize="40sp"
+        android:textColor="@color/black"
+        />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/second_BTN_fast_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Buttons - FAST"
+        android:textSize="20sp"
+        android:layout_below="@id/second_TXT_headline"
+        android:layout_marginTop="100dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/second_BTN_slow_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Buttons - SLOW"
+        android:textSize="20sp"
+        android:layout_below="@id/second_BTN_fast_buttons"
+        android:layout_marginTop="20dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/second_BTN_sensor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sensors"
+        android:textSize="20sp"
+        android:layout_below="@id/second_BTN_slow_buttons"
+        android:layout_marginTop="20dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/second_BTN_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back to main menu"
+        android:textSize="20sp"
+        android:layout_below="@id/second_BTN_sensor"
+        android:layout_marginTop="20dp"/>
+
+</RelativeLayout>

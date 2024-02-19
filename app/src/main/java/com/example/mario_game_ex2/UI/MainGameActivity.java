@@ -3,13 +3,19 @@ package com.example.mario_game_ex2.UI;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TableLayout;
@@ -35,11 +41,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MainGameActivity extends Activity {
+public class MainGameActivity extends Activity implements SensorEventListener {
 
     private ShapeableImageView[] main_game_IMG_hearts; // hearts array
     private TableLayout main_game_TBL_matrix; // UI game board
     private MaterialTextView main_game_LBL_score; // score label
+    private MaterialTextView main_game_LBL_fast; // speed label
     private MaterialButton main_game_BTN_right; // right button
     private MaterialButton main_game_BTN_left; // left button
     private int COLS; // board columns
@@ -59,25 +66,57 @@ public class MainGameActivity extends Activity {
 
     private TopTenScores topTenScores;
 
+    private boolean sensorMode;
+
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private Sensor mGyroscope;
+    private boolean isGameOverDialogShowing = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_game);
         findViews();
-        topTenScores = new TopTenScores();
-        topTenScores.setName("Top 10 Players");
+//        topTenScores = new TopTenScores();
+//        topTenScores.setName("Top 10 Players");
         isGamePaused = false;
         handler = new Handler();
         GAMESPEED = getIntent().getIntExtra("updatedGameSpeed", 1); // get value from settings screen
         COLS = getIntent().getIntExtra("updatedCols", 3); // get Columms value from main menu with default 3
         ROWS = getIntent().getIntExtra("updatedRows", 5); // get Rows value from main menu with default 5
         isVibrator = getIntent().getBooleanExtra("vibrateValue", true); // get if the game include vibrates or not
+        sensorMode = getIntent().getBooleanExtra("sensorMode", false); // get if the game running with buttons/tilts
         gameMan = new GameManager(ROWS, COLS, 3); // create game manager
         board = gameMan.getBoard(); // get board of GameTool's
         setMatrixAtStart(); // align UI with content of board at start of a new game
         setListeners();
+        if (sensorMode) { // remove buttons and use tilts
+            main_game_LBL_fast.setText("");
+            setMovementListeners();
+            setMovementButtonsNotVisible();
+        } else {
+            main_game_LBL_fast.setVisibility(View.INVISIBLE);
+        }
         play(); // play game function
+    }
+
+    private void setMovementListeners() {
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        if (mAccelerometer != null) {
+            mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        if (mGyroscope != null) {
+            mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    private void setMovementButtonsNotVisible() {
+        this.main_game_BTN_right.setVisibility(View.INVISIBLE);
+        this.main_game_BTN_left.setVisibility(View.INVISIBLE);
     }
 
     private void setListeners() {
@@ -172,7 +211,7 @@ public class MainGameActivity extends Activity {
         }
     }
 
-    private void makeToast(String toastText){
+    private void makeToast(String toastText) {
         Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
     }
 
@@ -209,6 +248,9 @@ public class MainGameActivity extends Activity {
                 break;
             case 3:
                 // Game Over!
+                main_game_IMG_hearts[0].setVisibility(View.INVISIBLE);
+                main_game_IMG_hearts[1].setVisibility(View.INVISIBLE);
+                main_game_IMG_hearts[2].setVisibility(View.INVISIBLE);
                 showGameOverDialog(gameMan.getScore() + "");
                 break;
         }
@@ -216,6 +258,7 @@ public class MainGameActivity extends Activity {
 
     private void showGameOverDialog(String finalScore) {
         isGamePaused = true;
+        isGameOverDialogShowing = true;
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.game_over_dialog);
 
@@ -234,9 +277,9 @@ public class MainGameActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String playerName = edtPlayerName.getText().toString();
-                if(playerName.equals("")){
+                if (playerName.equals("")) {
                     makeToast("Enter player name!");
-                }else {
+                } else {
                     // Inside showGameOverDialog method
                     SharedPreferences prefs = getSharedPreferences("TopScores", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = prefs.edit();
@@ -250,9 +293,23 @@ public class MainGameActivity extends Activity {
 
                     navigateToMainMenu();
                     dialog.dismiss(); // Close the dialog
+                    isGameOverDialogShowing = false; // Reset the flag when the dialog is dismissed
                 }
             }
         });
+
+        // Override the dialog's key listener to prevent the back button from closing the dialog
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                    // Consume the event to prevent the dialog from being dismissed
+                    return true;
+                }
+                return false;
+            }
+        });
+
         // Show the dialog
         dialog.show();
     }
@@ -289,6 +346,7 @@ public class MainGameActivity extends Activity {
                 findViewById(R.id.main_game_IMG_heart2),
                 findViewById(R.id.main_game_IMG_heart3)
         };
+        main_game_LBL_fast = findViewById(R.id.main_game_LBL_fast);
         main_game_LBL_score = findViewById(R.id.main_game_LBL_score);
         main_game_TBL_matrix = findViewById(R.id.main_game_TBL_matrix);
         main_game_BTN_right = findViewById(R.id.main_game_BTN_right);
@@ -307,11 +365,19 @@ public class MainGameActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        pauseGame();
+        if (isGameOverDialogShowing) {
+            return;
+        }
+        if (!isGamePaused) {
+            pauseGame(); // Pause the game and show the pause dialog
+        } else {
+            super.onBackPressed(); // Allow normal back button behavior when game is already paused
+        }
     }
 
     // Call this method when you want to pause the game
     private void pauseGame() {
+        mSensorManager.unregisterListener(this);
         isGamePaused = true;
         showPauseDialog();
     }
@@ -319,6 +385,8 @@ public class MainGameActivity extends Activity {
     // Call this method when you want to resume the game
     private void resumeGame() {
         isGamePaused = false;
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
         // Perform tasks to resume the game (e.g., restart the timer)
     }
 
@@ -362,5 +430,48 @@ public class MainGameActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        float x = event.values[0];
+        float y = event.values[1];
+        if (Math.abs(x) > Math.abs(y)) {
+            if (x < -5) {
+                movePlayerRight();
+            }
+            if (x > 5) {
+                movePlayerLeft();
+            }
+        } else {
+            if (y < -5) {
+                increaseGameSpeed();
+            }
+            if (y > 5) {
+                decreaseGameSpeed();
+            }
+        }
+        if (x > (-2) && x < (2) && y > (-2) && y < (2)) {
+        }
+    }
+
+
+
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    private void increaseGameSpeed() {
+        // Increase game speed
+        main_game_LBL_fast.setText("Fast!");
+        GAMESPEED = 5; // Example increment, adjust as needed
+    }
+
+    private void decreaseGameSpeed() {
+        // Decrease game speed
+        main_game_LBL_fast.setText("Slow!");
+        GAMESPEED = 2;
     }
 }

@@ -58,6 +58,24 @@
         android:textSize="32sp"
         android:textStyle="bold" />
 
+    <!-- Fast -->
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/main_game_LBL_fast"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/settings_padding_default"
+        android:layout_marginEnd="86dp"
+        android:layout_marginRight="16dp"
+        android:layout_toLeftOf="@id/main_game_LBL_score"
+        android:layout_toRightOf="@id/main_game_IMG_heart3"
+        android:text="GameSpeed"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        tools:ignore="NotSibling" />
+
     <TableLayout
         android:id="@+id/main_game_TBL_matrix"
         android:layout_width="match_parent"

@@ -18,11 +18,8 @@ public class MainMenuActivity extends AppCompatActivity {
 
     private int COLS;
     private int ROWS;
-
     private int GAMESPEED;
-
     private boolean isVibrator = true;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,10 +54,10 @@ public class MainMenuActivity extends AppCompatActivity {
         main_BTN_settings = findViewById(R.id.main_BTN_settings);
         main_BTN_quit = findViewById(R.id.main_BTN_quit);
     }
-    // play button pressed -> move to play game activity
+    // play button pressed -> move to second menu activity
     private void playClicked() {
-        // Start the game activity or navigate to the game screen
-        Intent intent = new Intent(this, MainGameActivity.class);
+        // Navigate to second menu screen
+        Intent intent = new Intent(this, SecondMenuActivity.class);
         intent.putExtra("updatedGameSpeed", this.GAMESPEED);
         intent.putExtra("updatedCols", this.COLS);
         intent.putExtra("updatedRows", this.ROWS);

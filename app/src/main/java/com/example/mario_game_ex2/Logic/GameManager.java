@@ -41,7 +41,7 @@ public class GameManager {
         activeOpponents = new ArrayList<Opponent>();
         activeRevivers = new ArrayList<Reviver>();
         this.lives = lives;
-        strikes = 0;
+        this.strikes = 0;
     }
 
     // get board of GameTool
