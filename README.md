@@ -37,8 +37,7 @@
 | --- | --- | --- | --- |
 | <img src="media/ButtonsGame.jpeg" alt="Buttons Mode" width="200"/> | <img src="media/SensorGame.jpeg" alt="Sensor Mode" width="200"/> | <img src="media/PauseDialog.jpeg" alt="Pause Dialog" width="200"/> | <img src="media/GameOverDialog.jpeg" alt="Game Over Dialog" width="200"/> |
 
-## Buttons game Preview:
-https://github.com/SaarGamzo/SuperMario-EX1/assets/88244818/9d6843d0-1cc6-452c-919a-dc1954cfe2c1
-
-## Sensog game Preview:
-https://github.com/SaarGamzo/SuperMario-EX1/assets/88244818/9d6843d0-1cc6-452c-919a-dc1954cfe2c1
+## Video Previews:
+| Buttons Game Preview | Sensor Game Preview | ScoreBoard Preview |
+| --- | --- | --- |
+| 
