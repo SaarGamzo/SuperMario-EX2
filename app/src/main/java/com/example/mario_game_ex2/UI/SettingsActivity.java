@@ -8,6 +8,7 @@ import android.widget.Switch;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mario_game_ex2.R;
+import com.example.mario_game_ex2.Utils.SharedUtils;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 
@@ -32,6 +33,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        SharedUtils.getInstance().hideSystemUI(this);
         findViews();
         GAMESPEED = getIntent().getIntExtra("initialGameSpeed", 1); // get value from main activity
         COLS = getIntent().getIntExtra("initialCols", 3); // get value from main activity
@@ -121,6 +123,7 @@ public class SettingsActivity extends AppCompatActivity {
         intent.putExtra("updatedCols", settings_SLIDER_columns.getProgress());
         intent.putExtra("updatedRows", settings_SLIDER_rows.getProgress());
         intent.putExtra("vibrateValue", settings_BTN_vibrate.isChecked());
+        finish();
         startActivity(intent);
     }
 }

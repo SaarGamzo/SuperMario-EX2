@@ -1,16 +1,18 @@
 package com.example.mario_game_ex2.UI;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.MediaPlayer;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,24 +26,27 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+
 import com.example.mario_game_ex2.Logic.GameManager;
 import com.example.mario_game_ex2.Logic.GameTool;
 import com.example.mario_game_ex2.Logic.Opponent;
 import com.example.mario_game_ex2.Logic.Player;
 import com.example.mario_game_ex2.Logic.Reviver;
-import com.example.mario_game_ex2.Models.Score;
-import com.example.mario_game_ex2.Models.TopTenScores;
 import com.example.mario_game_ex2.R;
+import com.example.mario_game_ex2.Utils.MySharedPreferences;
+import com.example.mario_game_ex2.Utils.SharedUtils;
 import com.example.mario_game_ex2.Utils.SoundPlayer;
+import com.example.mario_game_ex2.Utils.TopTenArr;
+import com.example.mario_game_ex2.Models.PlayerDetails;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
-import com.example.mario_game_ex2.Models.Score;
-import com.example.mario_game_ex2.Models.TopTenScores;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class MainGameActivity extends Activity implements SensorEventListener {
 
@@ -66,22 +71,25 @@ public class MainGameActivity extends Activity implements SensorEventListener {
 
     private boolean isGamePaused = false;
 
-    private TopTenScores topTenScores;
-
     private boolean sensorMode;
 
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private Sensor mGyroscope;
     private boolean isGameOverDialogShowing = false;
+    private LocationManager locationManager;
+    private float lat;
+    private float lon;
+    private static final String SP_KEY_TOPTEN = "SP_KEY_PLAYLIST";
+    private boolean hasMoved = false;
 
-    private SoundPlayer soundPlayer;
-
+    private static final int SENSOR_SENSITIVITY = 7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_game);
+        SharedUtils.getInstance().hideSystemUI(this);
         findViews();
 
         // Initialize game components
@@ -89,7 +97,6 @@ public class MainGameActivity extends Activity implements SensorEventListener {
         isGamePaused = false;
         addNewOpponentsScheduler = true;
         isGameOverDialogShowing = false;
-        soundPlayer = SoundPlayer.getInstance(getApplicationContext());
 
         // Get game settings from intent extras
         GAMESPEED = getIntent().getIntExtra("updatedGameSpeed", 1);
@@ -152,11 +159,19 @@ public class MainGameActivity extends Activity implements SensorEventListener {
                     addNewOpponentsScheduler = !addNewOpponentsScheduler; // Toggle the boolean value
                     board = gameMan.getBoard();
                     refreshUI();
+                    resetMoveFlag(); // Reset the move flag after each turn
+                    if (sensorMode) {
+                        registerSensorListeners(); // Re-register the sensor listener for the next turn
+                    }
                 }
                 // Schedule the next iteration
                 play();
             }
         }, (SECINTERVAL - (GAMESPEED * 100)));
+    }
+
+    private void resetMoveFlag() {
+        hasMoved = true;
     }
 
 
@@ -208,6 +223,9 @@ public class MainGameActivity extends Activity implements SensorEventListener {
         }
         board = gameMan.getBoard();
         refreshUI();
+        hasMoved = true; // Set the flag to true to indicate that the player has moved
+        if(sensorMode)
+            unregisterSensorListener(); // Unregister the sensor listener after the player moves
     }
 
     // move player to right
@@ -217,6 +235,9 @@ public class MainGameActivity extends Activity implements SensorEventListener {
         }
         board = gameMan.getBoard();
         refreshUI();
+        hasMoved = true; // Set the flag to true to indicate that the player has moved
+        if(sensorMode)
+            unregisterSensorListener(); // Unregister the sensor listener after the player moves
     }
 
     // if player and opponent meet - show a toast & vibrate if enabled
@@ -225,7 +246,7 @@ public class MainGameActivity extends Activity implements SensorEventListener {
         if (isVibrator) {
             vibrate();
         }
-        soundPlayer.playSound();
+        SoundPlayer.getInstance(this).playCrashSound();
     }
 
     private void makeToast(String toastText) {
@@ -274,8 +295,8 @@ public class MainGameActivity extends Activity implements SensorEventListener {
     }
 
     private void showGameOverDialog(String finalScore) {
-        pauseGame();
         isGameOverDialogShowing = true;
+        pauseGame();
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.game_over_dialog);
 
@@ -296,20 +317,31 @@ public class MainGameActivity extends Activity implements SensorEventListener {
                 String playerName = edtPlayerName.getText().toString();
                 if (playerName.equals("")) {
                     makeToast("Enter player name!");
-                } else {
-                    // Inside showGameOverDialog method
-//                    SharedPreferences prefs = getSharedPreferences("TopScores", Context.MODE_PRIVATE);
-//                    SharedPreferences.Editor editor = prefs.edit();
-//                    int score = Integer.parseInt(finalScore);
-                    // add new Score to the topTenScores
-//                    Score newScore = new Score();
-//                    newScore.setName(playerName);
-//                    newScore.setDate(new Date());
-//                    newScore.setScore(score);
-//                    topTenScores.addScore(newScore);
+                } else if(playerName.length() > 13){
+                    makeToast("Too long name!");
+                }
+                else {
+
+                    ActivityCompat.requestPermissions(MainGameActivity.this, new String[]
+                            {Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+
+                    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+                    @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                    lat = (float) location.getLatitude();
+                    lon = (float) location.getLongitude();
+
+                    MySharedPreferences.init(getApplicationContext());
+
+                    setListFromJson();
+                    gameMan.addRecord(playerName, lon, lat, Integer.parseInt(finalScore));//add a new record
+
+                    storeListToJson();
                     isGameOverDialogShowing = false;
-                    navigateToMainMenu();
                     dialog.dismiss(); // Close the dialog
+                    finish();
+                    navigateToMainMenu();
                 }
             }
         });
@@ -390,10 +422,11 @@ public class MainGameActivity extends Activity implements SensorEventListener {
 
     // Call this method when you want to pause the game
     private void pauseGame() {
-        if(this.sensorMode)
+        if (this.sensorMode)
             mSensorManager.unregisterListener(this);
         isGamePaused = true;
-        showPauseDialog();
+        if (!isGameOverDialogShowing)
+            showPauseDialog();
         handler.removeCallbacksAndMessages(null);
     }
 
@@ -456,31 +489,16 @@ public class MainGameActivity extends Activity implements SensorEventListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        soundPlayer.release();
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float x = event.values[0];
-        float y = event.values[1];
-        if (Math.abs(x) > Math.abs(y)) {
-            if (x < -5) {
-                movePlayerRight();
-            }
-            else if (x > 5) {
-                movePlayerLeft();
-            }
-        } else {
-            if (y < -5) {
-                increaseGameSpeed();
-            }
-            else if (y > 5) {
-                decreaseGameSpeed();
-            }
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            handleAccelerometerEvent(event);
+        } else if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            handleGyroscopeEvent(event);
         }
     }
-
-
 
 
     @Override
@@ -488,15 +506,65 @@ public class MainGameActivity extends Activity implements SensorEventListener {
 
     }
 
+    private void handleAccelerometerEvent(SensorEvent event) {
+        float x = event.values[0];
+        float y = event.values[1];
+        if (Math.abs(x) > Math.abs(y)) {
+            if (x < -SENSOR_SENSITIVITY) {
+                movePlayerRight();
+            } else if (x > SENSOR_SENSITIVITY) {
+                movePlayerLeft();
+            }
+        } else {
+            if (y < -SENSOR_SENSITIVITY) {
+                increaseGameSpeed();
+            } else if (y > SENSOR_SENSITIVITY) {
+                decreaseGameSpeed();
+            }
+        }
+    }
+
+    private void handleGyroscopeEvent(SensorEvent event) {
+    }
+
     private void increaseGameSpeed() {
-        // Increase game speed
-        main_game_LBL_fast.setText("Fast!");
-        GAMESPEED = 5; // Example increment, adjust as needed
+        // Increase game speed up to a certain limit
+        if (GAMESPEED != 5) {
+            GAMESPEED = 5;
+            main_game_LBL_fast.setText("Fast!");
+        }
     }
 
     private void decreaseGameSpeed() {
-        // Decrease game speed
-        main_game_LBL_fast.setText("Slow!");
-        GAMESPEED = 2;
+        // Decrease game speed down to a certain limit
+        if (GAMESPEED != 1) {
+            GAMESPEED = 1;
+            main_game_LBL_fast.setText("Slow!");
+        }
     }
+
+    public void setListFromJson() {
+        ArrayList<PlayerDetails> topten;
+        String serializedObject = MySharedPreferences.getInstance().getString(SP_KEY_TOPTEN, null);
+        if (serializedObject != null) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<PlayerDetails>>() {
+            }.getType();
+            topten = gson.fromJson(serializedObject, type);
+            TopTenArr.setTopTens(topten);
+        }
+    }
+
+    public void storeListToJson() {
+        Gson gson = new Gson();
+        String topten = gson.toJson(this.gameMan.getTopTen().getTopTen());
+        MySharedPreferences.getInstance().putString(SP_KEY_TOPTEN, topten);//put jason string in SP
+
+    }
+
+    // Unregister sensor listener
+    private void unregisterSensorListener() {
+        mSensorManager.unregisterListener(this);
+    }
+
 }

@@ -1,12 +1,15 @@
 package com.example.mario_game_ex2.UI;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mario_game_ex2.R;
-import com.example.mario_game_ex2.Utils.SharedPreferencesManager;
+import com.example.mario_game_ex2.Utils.MySharedPreferences;
+import com.example.mario_game_ex2.Utils.SharedUtils;
 import com.google.android.material.button.MaterialButton;
 
 public class MainMenuActivity extends AppCompatActivity {
@@ -24,8 +27,9 @@ public class MainMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        SharedUtils.getInstance().hideSystemUI(this);
         findViews();
-        SharedPreferencesManager.init(this);
+        MySharedPreferences.init(this);
         GAMESPEED = getIntent().getIntExtra("updatedGameSpeed", 1); // get value from settings screen
         COLS = getIntent().getIntExtra("updatedCols", 5); // get value from settings screen
         ROWS = getIntent().getIntExtra("updatedRows", 8); // get value from settings screen
@@ -43,7 +47,8 @@ public class MainMenuActivity extends AppCompatActivity {
 
     // score board button clicked
     private void scoreBoardClicked() {
-        Intent intent = new Intent(this, ScoreBoardActivity.class);
+//        Intent intent = new Intent(this, ScoreBoardActivity.class);
+        Intent intent = new Intent(this, TopTenPanel.class);
         startActivity(intent);
     }
 
@@ -62,6 +67,7 @@ public class MainMenuActivity extends AppCompatActivity {
         intent.putExtra("updatedCols", this.COLS);
         intent.putExtra("updatedRows", this.ROWS);
         intent.putExtra("vibrateValue", this.isVibrator);
+        finish();
         startActivity(intent);
     }
     // settings button pressed -> move to settings activity
@@ -76,5 +82,6 @@ public class MainMenuActivity extends AppCompatActivity {
     // quit button pressed -> close applictaion
     private void quitClicked() {
         finishAffinity();
+        System.exit(0);
     }
 }

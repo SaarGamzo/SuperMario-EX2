@@ -1,21 +1,24 @@
 package com.example.mario_game_ex2.Logic;
 
+import com.example.mario_game_ex2.Utils.TopTenArr;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
 public class GameManager {
-    private Player player; // player
+    private final Player player; // player
     private int numberOfOpponentsGone = 0; // counter of opponents won - to calculate score
-    private ArrayList<Opponent> activeOpponents; // all active opponents
-    private ArrayList<Reviver> activeRevivers; // all active revivers
-    private int lives; // number of lives
+    private final ArrayList<Opponent> activeOpponents; // all active opponents
+    private final ArrayList<Reviver> activeRevivers; // all active revivers
     private int strikes; // number of strikes
-    private GameTool[][] board; // board of GameTool
+    private final GameTool[][] board; // board of GameTool
     private int COLS = 3;
     private int ROWS = 5;
 
     private int reviversCounter = 0;
+    private static GameManager manager;
+    private TopTenArr topTen;
 
     public GameManager() {
         board = new GameTool[ROWS][COLS];
@@ -23,7 +26,6 @@ public class GameManager {
         setUpBoard(); // set up board - all cells are null except player location
         activeOpponents = new ArrayList<Opponent>(); // set active opponents arraylist
         activeRevivers = new ArrayList<Reviver>(); // set active revivers arraylist
-        lives = 3; // player lives
         this.strikes = 0; // player strikes
     }
 
@@ -40,8 +42,8 @@ public class GameManager {
         setUpBoard();
         activeOpponents = new ArrayList<Opponent>();
         activeRevivers = new ArrayList<Reviver>();
-        this.lives = lives;
         this.strikes = 0;
+        topTen = TopTenArr.set();
     }
 
     // get board of GameTool
@@ -191,7 +193,6 @@ public class GameManager {
     private void reviveHit() {
         if(getStrikes() < 3 && getStrikes() > 0){
             strikes--;
-            lives++;
         }
         else{
             numberOfOpponentsGone += 5;
@@ -239,13 +240,6 @@ public class GameManager {
     // when hit happened between player and opponent
     private void hit() {
         strikes++;
-        lives -= 1;
-    }
-
-    // TODO - Relevant only to first assignment - will be removed later
-    public void revive() {
-        strikes = 0;
-        lives = 3;
     }
 
     // play turn - one turn only move opponents down, second turn add new opponents and go on...
@@ -264,5 +258,20 @@ public class GameManager {
             moveReviversDown();
         }
         return retStatus; // return false if hit happened on this turn
+    }
+
+    public static GameManager set() {
+        if (manager == null) {
+            manager = new GameManager();
+        }
+        return manager;
+    }
+
+    public TopTenArr getTopTen() {
+        return topTen;
+    }
+
+    public void addRecord(String name, double lon, double lat, int score) {
+        topTen.addRecord(name, score, lat, lon);
     }
 }

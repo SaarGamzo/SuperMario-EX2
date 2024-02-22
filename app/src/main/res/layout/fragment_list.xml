@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:stretchColumns="*"
+    android:background="@color/white">
+
+    <!-- Header Row -->
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:gravity="center">
+
+        <!-- Number Column -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No."
+            android:textStyle="bold"
+            android:padding="16dp"
+            android:textSize="@dimen/settings_text_size"
+            android:textColor="@color/black" />
+
+        <!-- Player Name Column -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Player name"
+            android:textStyle="bold"
+            android:padding="16dp"
+            android:textSize="@dimen/settings_text_size"
+            android:textColor="@color/black"/>
+
+        <!-- Score Column -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Score"
+            android:textStyle="bold"
+            android:padding="16dp"
+            android:textSize="@dimen/settings_text_size"
+            android:textColor="@color/black"/>
+
+    </TableRow>
+
+    <!-- Divider Line -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@android:color/black"/>
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_topten"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</TableLayout>

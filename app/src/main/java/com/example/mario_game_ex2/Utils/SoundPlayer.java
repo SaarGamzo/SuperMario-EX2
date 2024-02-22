@@ -13,8 +13,6 @@ public class SoundPlayer {
     // Private constructor to prevent instantiation from outside
     private SoundPlayer(Context context) {
         this.context = context.getApplicationContext();
-        // Initialize the MediaPlayer
-        mediaPlayer = MediaPlayer.create(this.context, R.raw.crash);
     }
 
     // Get the singleton instance
@@ -25,11 +23,20 @@ public class SoundPlayer {
         return instance;
     }
 
-    // Method to play the sound
-    public void playSound() {
-        if (mediaPlayer != null) {
-            mediaPlayer.start();
-        }
+    public void playCrashSound() {
+        // Release any previously used MediaPlayer
+        release();
+        // Create and start MediaPlayer for the crash sound
+        mediaPlayer = MediaPlayer.create(context, R.raw.crash);
+        mediaPlayer.start();
+    }
+
+    public void playStarSound() {
+        // Release any previously used MediaPlayer
+        release();
+        // Create and start MediaPlayer for the coin sound
+        mediaPlayer = MediaPlayer.create(context, R.raw.coin);
+        mediaPlayer.start();
     }
 
     // Method to release the MediaPlayer

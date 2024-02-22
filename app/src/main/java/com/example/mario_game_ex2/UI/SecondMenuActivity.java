@@ -6,7 +6,8 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mario_game_ex2.R;
-import com.example.mario_game_ex2.Utils.SharedPreferencesManager;
+import com.example.mario_game_ex2.Utils.MySharedPreferences;
+import com.example.mario_game_ex2.Utils.SharedUtils;
 import com.google.android.material.button.MaterialButton;
 
 public class SecondMenuActivity extends AppCompatActivity {
@@ -25,8 +26,9 @@ public class SecondMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second_menu);
+        SharedUtils.getInstance().hideSystemUI(this);
         findViews();
-        SharedPreferencesManager.init(this);
+        MySharedPreferences.init(this);
         GAMESPEED = getIntent().getIntExtra("updatedGameSpeed", 1); // get value from main menu screen
         COLS = getIntent().getIntExtra("updatedCols", 5); // get value from main menu screen
         ROWS = getIntent().getIntExtra("updatedRows", 8); // get value from main menu screen
@@ -55,6 +57,7 @@ public class SecondMenuActivity extends AppCompatActivity {
         intent.putExtra("updatedRows", this.ROWS);
         intent.putExtra("vibrateValue", this.isVibrator);
         intent.putExtra("sensorMode", false);
+        finish();
         startActivity(intent);
     }
 
@@ -65,6 +68,7 @@ public class SecondMenuActivity extends AppCompatActivity {
         intent.putExtra("updatedRows", this.ROWS);
         intent.putExtra("vibrateValue", this.isVibrator);
         intent.putExtra("sensorMode", false);
+        finish();
         startActivity(intent);
     }
 
@@ -75,12 +79,22 @@ public class SecondMenuActivity extends AppCompatActivity {
         intent.putExtra("updatedRows", this.ROWS);
         intent.putExtra("vibrateValue", this.isVibrator);
         intent.putExtra("sensorMode", true);
+        finish();
         startActivity(intent);
     }
 
     private void backClicked() {
         Intent intent = new Intent(this, MainMenuActivity.class);
         startActivity(intent);
+        finish(); // Optional: Finish the current activity if you don't want it to remain in the backstack
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, MainMenuActivity.class);
+        startActivity(intent);
+        finish(); // Optional: Finish the current activity if you don't want it to remain in the backstack
     }
 
 }
