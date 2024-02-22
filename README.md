@@ -29,12 +29,12 @@
 
 | Main Menu | Settings | Game modes | ScoreBoard |
 | --- | --- | --- | --- |
-| <img src="media/MainMenu.jpeg" alt="Main Menu" width="200"/> | <img src="media/Settings.jpeg" alt="Settings" width="200"/> | <img src="media/GameMenu.jpeg" alt="Game modes" width="200"/> | <img src="media/ScoreBoard.jpeg" alt="ScoreBoard" width="200"/> |
+| <img src="media/MainMenu.jpeg" alt="Main Menu" width="200"/> | <img src="media/settings.jpeg" alt="Settings" width="200"/> | <img src="media/GameMenu.jpeg" alt="Game modes" width="200"/> | <img src="media/ScoreBoard.jpeg" alt="ScoreBoard" width="200"/> |
 
 ## In-Game screenshots:
 
 | Buttons Mode | Sensor Mode | Pause Dialog | Game Over Dialog |
-| --- | --- | --- |
+| --- | --- | --- | --- |
 | <img src="media/ButtonsGame.jpeg" alt="Buttons Mode" width="200"/> | <img src="media/SensorGame.jpeg" alt="Sensor Mode" width="200"/> | <img src="media/PauseDialog.jpeg" alt="Pause Dialog" width="200"/> | <img src="media/GameOverDialog.jpeg" alt="Game Over Dialog" width="200"/> |
 
 ## Buttons game Preview:
