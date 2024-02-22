@@ -37,7 +37,17 @@
 | --- | --- | --- | --- |
 | <img src="media/ButtonsGame.jpeg" alt="Buttons Mode" width="200"/> | <img src="media/SensorGame.jpeg" alt="Sensor Mode" width="200"/> | <img src="media/PauseDialog.jpeg" alt="Pause Dialog" width="200"/> | <img src="media/GameOverDialog.jpeg" alt="Game Over Dialog" width="200"/> |
 
-## Video Previews:
+## Gifs Previews:
+
 | Buttons Game Preview | Sensor Game Preview | ScoreBoard Preview |
 | --- | --- | --- |
-| 
+| <img src="https://github.com/SaarGamzo/SuperMario-EX2/assets/88244818/985ba927-a80d-4d39-9728-c38cf4167a1b" alt="Buttons Game Preview" width="200"/> | <img src="https://github.com/SaarGamzo/SuperMario-EX2/assets/88244818/6c2ae249-6c87-40ba-a849-71507a2b9d53" alt="Sensor Game Preview" width="200"/> | <img src="https://github.com/SaarGamzo/SuperMario-EX2/assets/88244818/99718729-7bf9-4d26-be70-e43772b79628" alt="ScoreBoard Preview" width="200"/> |
+
+## Video Previews:
+
+### Buttons mode game:
+https://github.com/SaarGamzo/SuperMario-EX2/assets/88244818/9250696f-d607-4fc3-aab1-223b1163a953
+### Sensor mode game:
+https://github.com/SaarGamzo/SuperMario-EX2/assets/88244818/3a54488b-f506-4869-8b8a-52ff40763ade
+### ScoreBoard:
+https://github.com/SaarGamzo/SuperMario-EX2/assets/88244818/64b81335-bc46-4e6b-84e2-1a9fd07be60a
