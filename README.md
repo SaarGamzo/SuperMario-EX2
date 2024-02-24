@@ -4,12 +4,13 @@
 1. Adjustable number of rows (4-8) and columns (3-5) - default is 8 rows and 5 columns.
 2. Adjustable game speed (1-5).
 3. Obstacles come at a constant speed on the road (obstacles come towards the player).
-4. Crash notification - toast message + vibration + sound.
-5. 3 Lives.
-6. App icon design.
-7. 3 Game mods: buttons-fast, buttons-slow, sensors.
-8. Sensor mode contains the ability to tilt right/left to move the player.
-9. Sensor mode contains the ability to tilt up/down to change game speed.
+4. Crash notification - toast message + vibration + **sound**.
+5. **3 Lives**.
+6. **App icon** design.
+7. **3 Game mods:** buttons-fast, buttons-slow, sensors.
+8. **Sensor mode** contains the ability to tilt right/left to move the player.
+9. **Sensor mode** contains the ability to tilt up/down to change game speed.
+10. **Score:** - Each bypass of an opponent earns 10 points (acts like an **odometer**), each star collected when the life is full earns 50 points.
 
 ## New implementations:
 * Using ***Fragments*** - one fragment to the players records and one for a map: a click on specific record will show the player's location on the map
@@ -23,7 +24,7 @@
 - **OnPause:** Freezes when exiting the app.
 - **OnResume:** Continues from where it paused when returning to the app.
 - **Timer:** Scheduled appearance of obstacles.
-- **Vibrator & Toast:** Used for every crash.
+- **Vibrator & Toast & Sound:** Used for every crash.
 
 ## Menus screenshots:
 
