@@ -5,21 +5,21 @@
 2. Adjustable game speed (1-5).
 3. Obstacles come at a constant speed on the road (obstacles come towards the player).
 4. Crash notification - toast message + vibration + **sound**.
-5. **3 Lives**.
-6. **App icon** design.
+5. **3 Lives-** Game over in 3 lives.
+6. **App icon** design by picture & background color.
 7. **3 Game mods:** buttons-fast, buttons-slow, sensors.
-8. **Sensor mode** contains the ability to tilt right/left to move the player.
-9. **Sensor mode** contains the ability to tilt up/down to change game speed.
-10. **Score:** - Each bypass of an opponent earns 10 points (acts like an **odometer**), each star collected when the life is full earns 50 points.
+8. **Sensor mode-** contains the ability to tilt right/left to move the player.
+9. **Sensor mode-** contains the ability to tilt up/down to change game speed.
+10. **Score-** Each bypass of an opponent earns 10 points (acts like an **odometer**), each **star** collected when the life is full earns 50 points (if life not full - gain extra life).
 
 ## New implementations:
-* Using ***Fragments*** - one fragment to the players records and one for a map: a click on specific record will show the player's location on the map
-* Using ***SharedPreferences*** - the player's records are stored on the device's SharedPreferences
-* Using ***Google maps API*** - fetching google maps
-* Using ***Device's location services*** - for setting the longitude and altitude of the players current location
-* Using ***MediaPlayer*** - Used for crash sound ('Ouch')
-* Using ***Adapter & RecyclerView*** - to the Top Ten highscores: designed one object and than by the RecyclerView creates 10 duplications of it
-
+* Using ***Fragments*** - one fragment to the players records and one for a map: a click on specific record will show the player's location on the map.
+* Using ***SharedPreferences*** - the player's records are stored on the device's SharedPreferences.
+* Using ***Google maps API*** - fetching google maps.
+* Using ***Device's location services*** - for setting the longitude and altitude of the players current location.
+* Using ***MediaPlayer*** - Used for crash sound ('Ouch').
+* Using ***Adapter & RecyclerView*** - to the Top Ten highscores: designed one object and than by the RecyclerView creates 10 duplications of it.
+* Using ***Sensors*** - to sensor mode game, tilt right/left to move player & tilt up/down to change speed of game.
 ## Game Flow:
 - **OnPause:** Freezes when exiting the app.
 - **OnResume:** Continues from where it paused when returning to the app.
